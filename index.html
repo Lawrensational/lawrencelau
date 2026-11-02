@@ -10,72 +10,142 @@
 <title>Lawrence Lau</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: recruiter-first two-column CV — fixed sidebar of facts, every role open in the main column. */
+/* Layout: recruiter-first two-column CV. Sidebar of facts; main column = headline, career climb chart, every role, team grid, tools. */
 :root{
-  --bg:#eef0f3; --paper:#ffffff; --ink:#16213a; --muted:#5b6476; --line:#e2e5eb; --accent:#c4741a; --accent-soft:#fbf1e4; --side:#16213a; --side-fg:#eef1f7; --side-muted:#a5b0c6;
+  --bg:#eef0f3; --paper:#ffffff; --ink:#16213a; --muted:#5b6476; --line:#e2e5eb; --accent:#c4741a; --accent-soft:#fbf1e4; --side:#16213a; --side-fg:#eef1f7; --side-muted:#a5b0c6; --cell:#d9dee8;
   --display:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif; --body:"Figtree",ui-sans-serif,system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0c111c;--paper:#141b29;--ink:#e9edf5;--muted:#9aa4b8;--line:#263045;--accent:#f0a24a;--accent-soft:rgba(240,162,74,.12);--side:#0f1726;--side-fg:#e9edf5;--side-muted:#8f9ab0;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0c111c;--paper:#141b29;--ink:#e9edf5;--muted:#9aa4b8;--line:#263045;--accent:#f0a24a;--accent-soft:rgba(240,162,74,.12);--side:#0f1726;--side-fg:#e9edf5;--side-muted:#8f9ab0;color-scheme:dark}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0c111c;--paper:#141b29;--ink:#e9edf5;--muted:#9aa4b8;--line:#263045;--accent:#f0a24a;--accent-soft:rgba(240,162,74,.12);--side:#0f1726;--side-fg:#e9edf5;--side-muted:#8f9ab0;--cell:#222c40;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c111c;--paper:#141b29;--ink:#e9edf5;--muted:#9aa4b8;--line:#263045;--accent:#f0a24a;--accent-soft:rgba(240,162,74,.12);--side:#0f1726;--side-fg:#e9edf5;--side-muted:#8f9ab0;--cell:#222c40;color-scheme:dark}
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.55;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 56px}
 h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
-.sheet{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:300px 1fr;background:var(--paper);border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 50px -30px rgba(10,20,40,.35)}
+
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:20;pointer-events:none}
+.progress i{display:block;height:100%;width:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0)}
+.theme{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));z-index:21;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:grid;place-items:center;box-shadow:0 6px 18px -8px rgba(10,20,40,.35)}
+.theme svg{width:18px;height:18px}
+
+.sheet{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:300px 1fr;background:var(--paper);border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 50px -30px rgba(10,20,40,.35)}
 aside{background:var(--side);color:var(--side-fg);padding:28px 26px;display:flex;flex-direction:column;gap:26px}
-.pic{border-radius:14px;overflow:hidden;aspect-ratio:1;max-width:100%}
-.pic img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
+.pic{border-radius:14px;overflow:hidden;aspect-ratio:1;max-width:100%;position:relative}
+.pic img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block;transition:transform .8s ease}
+.pic:hover img{transform:scale(1.05)}
 .sl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
 .contact{display:flex;flex-direction:column;gap:8px}
-.cbtn{display:flex;justify-content:space-between;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:9px 12px;font-size:12.5px;text-align:left;color:var(--side-fg);overflow-wrap:anywhere}
-.cbtn small{font-family:var(--mono);font-size:10.5px;color:var(--side-muted);text-transform:uppercase;letter-spacing:.08em;word-break:normal}
+.cbtn{display:flex;justify-content:space-between;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:9px 12px;font-size:12.5px;text-align:left;color:var(--side-fg);overflow-wrap:anywhere;transition:border-color .2s}
+.cbtn small{font-family:var(--mono);font-size:10.5px;color:var(--side-muted);text-transform:uppercase;letter-spacing:.08em;flex-shrink:0}
 .cbtn:hover{border-color:var(--accent)}
 .plain{font-size:14px;color:var(--side-muted)}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font-size:12.5px;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:4px 10px;background:transparent;color:var(--side-fg)}
+.tag{font-size:12.5px;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:4px 10px;background:transparent;color:var(--side-fg);transition:all .2s}
+.tag:hover{border-color:var(--accent)}
 .tag[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#1a1205}
+.filter-msg{font-size:12.5px;color:var(--side-muted);margin-top:8px;min-height:18px}
 .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px}
 .list b{color:var(--accent);font-family:var(--mono);font-weight:500;margin-right:8px}
+
 main{padding:34px 40px 40px;min-width:0}
 .top{display:flex;justify-content:space-between;gap:20px;align-items:start;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--line)}
-h1{font-size:clamp(36px,5vw,52px);font-weight:800;letter-spacing:-.025em;line-height:1}
+h1{font-size:clamp(36px,5vw,54px);font-weight:800;letter-spacing:-.025em;line-height:1}
+h1 .ch{display:inline-block}
 .title{font-size:17px;color:var(--muted);margin-top:8px}
 .title b{color:var(--ink);font-weight:600}
-.dl{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);border:0;border-radius:12px;padding:12px 18px;font-weight:600;font-size:14.5px}
+.dl{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);border:0;border-radius:12px;padding:12px 18px;font-weight:600;font-size:14.5px;transition:background .2s,transform .2s}
 .dl svg{width:16px;height:16px}
-.dl:hover{background:var(--accent);color:#1a1205}
-.dl-note{font-size:12px;color:var(--muted);margin-top:6px;text-align:right}
-.summary{margin:20px 0 0;max-width:68ch;color:var(--ink)}
-.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:22px;border:1px solid var(--line);border-radius:12px}
+.dl:hover{background:var(--accent);color:#1a1205;transform:translateY(-1px)}
+.toast{font-size:13px;color:var(--muted);min-height:18px;margin-top:6px;text-align:right}
+.summary{margin:20px 0 0;max-width:70ch}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);margin-top:22px;border:1px solid var(--line);border-radius:12px}
 .fact{padding:14px 16px;border-left:1px solid var(--line)}.fact:first-child{border-left:0}
-.fact b{display:block;font-family:var(--display);font-size:26px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
-.fact span{font-size:12.5px;color:var(--muted)}
-h2{font-size:13px;font-family:var(--mono);font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:34px 0 16px}
-.job{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--line)}
+.fact b{display:block;font-family:var(--display);font-size:28px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.fact b i{font-style:normal;color:var(--accent)}
+.fact>span{font-size:12.5px;color:var(--muted)}
+h2{font-size:13px;font-family:var(--mono);font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:36px 0 16px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+h2 small{font-family:var(--body);text-transform:none;letter-spacing:0;color:var(--muted);font-size:13px}
+
+/* career climb */
+.climb{border:1px solid var(--line);border-radius:14px;padding:12px 8px 6px;overflow-x:auto}
+.climb svg{display:block;width:100%;min-width:560px;height:auto}
+.climb .grid{stroke:var(--line);stroke-width:1}
+.climb .yr{fill:var(--muted);font-family:var(--mono);font-size:11px}
+.climb .path{fill:none;stroke:var(--accent);stroke-width:3;stroke-linejoin:round}
+.climb .area{fill:var(--accent-soft)}
+.climb .step{cursor:pointer}
+.climb .step circle{fill:var(--paper);stroke:var(--accent);stroke-width:3;transition:r .2s}
+.climb .step:hover circle,.climb .step:focus circle{r:9}
+.climb .step text{paint-order:stroke;stroke:var(--paper);stroke-width:5px;stroke-linejoin:round;fill:var(--ink);font-family:var(--body);font-size:12.5px;font-weight:600}
+.climb .step text.co{fill:var(--muted);font-weight:400;font-size:11.5px}
+.climb .star{fill:var(--accent);font-size:13px}
+.climb .startxt{fill:var(--accent);font-family:var(--mono);font-size:10.5px}
+@media (prefers-reduced-motion: no-preference){.climb .path.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.6s .3s ease forwards}}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* jobs */
+.job{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:22px 0;border-top:1px solid var(--line);scroll-margin-top:20px}
 .job:first-of-type{border-top:0;padding-top:0}
+.job.flash{animation:flash 1.2s ease}
+@keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
 .when{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.5}
 .when .now{display:inline-block;margin-top:6px;color:var(--accent);border:1px solid currentColor;border-radius:999px;padding:1px 8px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
 .job h3{font-size:19px;font-weight:700}
 .co{color:var(--muted);font-size:14px;margin-top:2px}
 .co b{color:var(--ink);font-weight:600}
 .duties{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
-.duties li{position:relative;padding-left:16px;font-size:14.5px;transition:opacity .2s,background .2s;border-radius:6px}
-.duties li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:2px;background:var(--accent)}
+.duties li{position:relative;padding:2px 6px 2px 18px;font-size:14.5px;transition:opacity .25s,background .25s;border-radius:6px}
+.duties li::before{content:"";position:absolute;left:4px;top:.72em;width:6px;height:6px;border-radius:2px;background:var(--accent)}
 .duties li b{font-weight:600}
 .duties li span{color:var(--muted)}
 .more{background:none;border:0;padding:6px 0 0;color:var(--accent);font-weight:600;font-size:13.5px}
 .filtering .duties li{opacity:.3}.filtering .duties li.hit{opacity:1;background:var(--accent-soft)}
-.team{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.team span{font-size:12.5px;background:var(--bg);border-radius:8px;padding:4px 9px;color:var(--muted)}
-.team span b{color:var(--ink);font-family:var(--mono);font-weight:500}
-.toast{font-size:13px;color:var(--muted);min-height:18px;margin-top:6px;text-align:right}
+
+/* people grid */
+.people{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:16px}
+.people-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.people-head h4{margin:0;font-family:var(--display);font-size:15.5px;font-weight:700}
+.people-head p{margin:2px 0 0;font-size:13px;color:var(--muted);max-width:52ch}
+.people-num{font-family:var(--mono);font-size:12.5px;color:var(--muted);white-space:nowrap}
+.people-num b{font-family:var(--display);font-size:22px;color:var(--accent)}
+.cells{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;margin-top:14px}
+.cell{aspect-ratio:1;border-radius:3px;background:var(--cell);transition:opacity .25s,transform .25s}
+.cell.d{background:var(--c)}
+@media (prefers-reduced-motion: no-preference){.cells.in .cell{animation:pop .4s backwards;animation-delay:calc(var(--i) * 8ms)}}
+@keyframes pop{from{transform:scale(.2)}}
+.cells.focus .cell{opacity:.18}.cells.focus .cell.on{opacity:1;transform:scale(1.12)}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.legend button{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;border:1px solid var(--line);background:transparent;border-radius:8px;padding:4px 9px;color:var(--muted);transition:border-color .2s}
+.legend button i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.legend button b{color:var(--ink);font-family:var(--mono);font-weight:500}
+.legend button:hover,.legend button[aria-pressed="true"]{border-color:var(--ink);color:var(--ink)}
+.readout{font-size:13px;margin-top:10px;min-height:20px;color:var(--ink)}
+
+/* tools */
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.tgroup{border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.tgroup h4{margin:0 0 10px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.tlist{display:flex;flex-wrap:wrap;gap:8px}
+.tool{display:inline-flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;border-radius:10px;background:var(--bg);font-size:13.5px;font-weight:500;transition:transform .2s,box-shadow .2s}
+.tool:hover{transform:translateY(-2px);box-shadow:0 8px 16px -10px rgba(10,20,40,.4)}
+.tool i{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-style:normal;font-family:var(--display);font-weight:800;font-size:10.5px;color:#fff;background:var(--c)}
+
+@media (prefers-reduced-motion: no-preference){
+  .rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) backwards}
+  h1 .ch{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i) * 35ms)}
+  @keyframes rise{from{transform:translateY(12px)}}
+}
 @media (max-width:860px){.sheet{grid-template-columns:1fr}aside{display:grid;grid-template-columns:1fr 1fr;gap:20px}.pic{grid-row:span 2}main{padding:26px 20px}}
-@media (max-width:560px){aside{grid-template-columns:1fr}.pic{max-width:220px}.facts{grid-template-columns:1fr 1fr}.fact:nth-child(3){border-left:0}.fact:nth-child(n+3){border-top:1px solid var(--line)}.job{grid-template-columns:1fr;gap:6px}.top{flex-direction:column}.dl-note,.toast{text-align:left}}
-@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media (max-width:560px){aside{grid-template-columns:1fr}.pic{max-width:220px}.facts{grid-template-columns:1fr 1fr}.fact:nth-child(3){border-left:0}.fact:nth-child(n+3){border-top:1px solid var(--line)}.job{grid-template-columns:1fr;gap:6px}.top{flex-direction:column}.toast{text-align:left}.cells{grid-template-columns:repeat(12,1fr)}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
+
+
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+<button class="theme" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></button>
 
 <div class="sheet">
   <aside>
@@ -86,25 +156,32 @@ h2{font-size:13px;font-family:var(--mono);font-weight:500;letter-spacing:.14em;t
         <button class="cbtn" id="c-phone" data-copy="+60163627345">+60 16-362 7345 <small>Copy</small></button>
         <div class="plain">Kuala Lumpur, Malaysia</div>
       </div></div>
-    <div><div class="sl">Skills · tap to highlight</div><div class="tags" id="tags"></div></div>
+    <div><div class="sl">Skills · tap to highlight</div><div class="tags" id="tags"></div><div class="filter-msg" id="filter-msg" aria-live="polite"></div></div>
     <div><div class="sl">Languages</div><ul class="list"><li>English</li><li>Chinese</li><li>Bahasa Malaysia</li></ul></div>
     <div><div class="sl">Awards</div><ul class="list"><li><b>2025</b>Best Employee of the Year</li><li><b>2024</b>Best Employee of the Year</li><li><b>2017</b>Best Employee of the Year</li></ul></div>
-    <div><div class="sl">Education</div><div style="font-size:14px">Bachelor of Hotel Management<div class="plain">Tunku Abdul Rahman University College</div></div></div>
+    <div><div class="sl">Education</div><div style="font-size:14px">Bachelor of Hotel Management<div class="plain">Tunku Abdul Rahman University College<br>2013 – 2015</div></div></div>
   </aside>
   <main>
     <div class="top">
-      <div><h1>Lawrence Lau</h1><div class="title"><b>Deputy Head of Department &amp; Country Manager</b> · EBC Financial Group</div></div>
-      <div><a class="dl" id="dl-pdf" href="Lawrence-Lau-Resume.pdf" download style="text-decoration:none"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>Download PDF resume</a><div class="toast" id="dl-msg"></div></div>
+      <div><h1 id="name" aria-label="Lawrence Lau">Lawrence Lau</h1><div class="title rise"><b>Deputy Head of Department &amp; Country Manager</b> · EBC Financial Group, Malaysia</div></div>
+      <div class="rise"><a class="dl" id="dl-pdf" href="Lawrence-Lau-Resume.pdf" download style="text-decoration:none"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>Download PDF resume</a><div class="toast" id="dl-msg"></div></div>
     </div>
-    <p class="summary">Operations leader in financial services with 10 years across back-office, payments, compliance and customer service. I run multi-function teams, write the policies they work by, and keep workflows efficient, compliant and accountable.</p>
-    <div class="facts">
-      <div class="fact"><b>10+</b><span>years experience</span></div>
-      <div class="fact"><b>51</b><span>people in 8 teams</span></div>
-      <div class="fact"><b>3×</b><span>Best Employee</span></div>
-      <div class="fact"><b>3</b><span>languages</span></div>
+    <p class="summary rise">Operations leader in financial services with 10 years across back-office, payments, compliance and customer service. As Country Manager I run the Kuala Lumpur office of around 120 people, with 51 staff across eight teams reporting directly to me. I write the policies we work by and keep workflows efficient, compliant and accountable.</p>
+    <div class="facts rise">
+      <div class="fact"><b><span data-count="10">10</span><i>+</i></b><span>years experience</span></div>
+      <div class="fact"><b><i>~</i><span data-count="120">120</span></b><span>staff in the office I manage</span></div>
+      <div class="fact"><b><span data-count="51">51</span></b><span>direct reports in 8 teams</span></div>
+      <div class="fact"><b><span data-count="3">3</span><i>×</i></b><span>Best Employee of the Year</span></div>
     </div>
+
+    <h2>Career climb <small>Select a step to jump to the role</small></h2>
+    <div class="climb" id="climb"></div>
+
     <h2>Experience</h2>
     <div id="jobs"></div>
+
+    <h2>Tools &amp; platforms</h2>
+    <div class="tools" id="tools"></div>
   </main>
 </div>
 <script>
@@ -167,26 +244,101 @@ const TEAM = [
 const HEART = [["H","Honesty"],["E","Equity"],["A","Appreciation"],["R","Respect"],["T","Trust"]];
 
 
+const TOOLS=[
+  ["Data & BI","#2f6fd6",[["Tableau","Tb"],["Power BI","BI"]]],
+  ["CRM","#c4741a",[["Salesforce","Sf"],["CRM systems","CR"]]],
+  ["KYC & fraud prevention","#1f9d78",[["Sumsub","Ss"],["SEON","SE"]]],
+  ["Workplace","#7a5bd6",[["Microsoft 365","MS"],["Google Workspace","GW"],["Lark","Lk"]]],
+  ["AI & development","#d0466a",[["Claude","Cl"],["GitHub","GH"]]]
+];
+
+// name letters
+const nm=document.getElementById('name');nm.innerHTML=[...'Lawrence Lau'].map((c,i)=>c===' '?' ':`<span class="ch" aria-hidden="true" style="--i:${i}">${c}</span>`).join('');
+
+// career climb chart
+(function(){
+  const W=720,H=280,L=24,R=24,T=60,B=44,x0=2016,x1=2027;
+  const X=y=>L+(y-x0)/(x1-x0)*(W-L-R), Y=lv=>H-B-(lv-.5)*((H-T-B)/4);
+  const steps=[[2016.25,1,3],[2020.67,2,2],[2023.25,3,1],[2025.58,4,0]];
+  const end=2026.84;
+  let d=`M${X(steps[0][0])},${Y(1)}`;
+  steps.forEach((s,i)=>{if(i)d+=` H${X(s[0])} V${Y(s[1])}`});d+=` H${X(end)}`;
+  const area=d+` V${H-B} H${X(steps[0][0])} Z`;
+  let g='';for(let y=2016;y<=2026;y+=2)g+=`<line class="grid" x1="${X(y)}" x2="${X(y)}" y1="${T-30}" y2="${H-B}"/><text class="yr" x="${X(y)}" y="${H-12}" text-anchor="middle">${y}</text>`;
+  const stars=[[2017.5,'2017'],[2024.5,'2024'],[2025.9,'2025']].map(([y,t])=>{let lv=1;steps.forEach(s=>{if(y>=s[0])lv=s[1]});return `<line class="grid" x1="${X(y)}" x2="${X(y)}" y1="28" y2="${Y(lv)}" stroke-dasharray="2 3"/><text class="startxt" x="${X(y)}" y="22" text-anchor="middle">★ ${t}</text>`}).join('');
+  const labels=steps.map(([y,lv,ji])=>{const j=JOBS[ji];const anchor=lv===4?'end':'start';const tx=lv===4?X(end):X(y)+12;
+    return `<g class="step" tabindex="0" role="button" data-job="${ji}" aria-label="${j.title}, ${j.co}, ${j.when}"><circle cx="${X(y)}" cy="${Y(lv)}" r="6.5"/><text x="${tx}" y="${Y(lv)+(lv===4?-30:20)}" text-anchor="${anchor}">${j.title}</text><text class="co" x="${tx}" y="${Y(lv)+(lv===4?-16:34)}" text-anchor="${anchor}">${j.co} · ${j.when.split(' – ')[0]}</text></g>`}).join('');
+  document.getElementById('climb').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Career progression from 2016 to 2026">${g}<path class="area" d="${area}"/><path class="path draw" id="climb-path" d="${d}"/>${stars}${labels}</svg>`;
+  const p=document.getElementById('climb-path');p.style.setProperty('--len',Math.ceil(p.getTotalLength()));
+  document.querySelectorAll('.step').forEach(s=>{const go=()=>{const el=document.getElementById('job-'+s.dataset.job);el.scrollIntoView({block:'start'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')};s.addEventListener('click',go);s.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
+})();
+
+// jobs
 const jobsEl=document.getElementById('jobs');
 JOBS.forEach((j,i)=>{
-  const el=document.createElement('div');el.className='job';
+  const el=document.createElement('div');el.className='job';el.id='job-'+i;
   const lim=5;
+  const people=j.team?`<div class="people">
+    <div class="people-head"><div><h4>The office I manage</h4><p>As Country Manager I oversee the whole office of around 120 staff. These are the 51 people who report directly to me, by team.</p></div>
+    <div class="people-num"><b>51</b> direct / ~120 total</div></div>
+    <div class="legend" id="legend"></div>
+    <div class="readout" id="readout" aria-live="polite">Hover or tap a team to see who reports to me.</div></div>`:'';
   el.innerHTML=`<div class="when">${j.when}<br>${j.loc}${j.now?'<br><span class="now">Current</span>':''}</div>
-  <div><h3>${j.title}</h3><div class="co"><b>${j.co}</b></div>
-  ${j.team?`<div class="team">${TEAM.map(t=>`<span>${t[0]} <b>${t[1]}</b></span>`).join('')}</div>`:''}
+  <div style="min-width:0"><h3>${j.title}</h3><div class="co"><b>${j.co}</b></div>
+  ${people}
   <ul class="duties">${j.duties.map((d,k)=>`<li data-tags="${d[2].join(' ')}" ${k>=lim?'hidden':''}><b>${d[0]}.</b> <span>${d[1]}</span></li>`).join('')}</ul>
   ${j.duties.length>lim?`<button class="more" id="more-${i}">Show all ${j.duties.length} responsibilities</button>`:''}</div>`;
   jobsEl.appendChild(el);
   const m=el.querySelector('.more');
   if(m)m.onclick=()=>{const open=m.dataset.open!=='1';m.dataset.open=open?'1':'0';el.querySelectorAll('.duties li').forEach((li,k)=>{if(k>=lim)li.hidden=!open});m.textContent=open?'Show fewer':`Show all ${j.duties.length} responsibilities`;};
 });
-let active=null;const tags=document.getElementById('tags');
+
+// people grid
+(function(){
+  const lgEl=document.getElementById('legend');if(!lgEl)return;
+  const lg=lgEl,ro=document.getElementById('readout');
+  const allBtn=`<button id="tm-x" data-t="x" aria-pressed="false" style="--c:var(--cell)"><i></i>Rest of office <b>~69</b></button>`;
+  lg.innerHTML=TEAM.map((t,ti)=>`<button id="tm-${ti}" data-t="${ti}" aria-pressed="false" style="--c:${t[2]}"><i></i>${t[0]} <b>${t[1]}</b></button>`).join('')+allBtn;
+  let locked=null;
+  const show=t=>{
+    lg.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===String(t)));
+    if(t===null)ro.textContent='Hover or tap a team to see who reports to me.';
+    else if(t==='x')ro.textContent='Around 69 more staff in the office, under my overall management as Country Manager.';
+    else{const tm=TEAM[t];ro.textContent=`${tm[0]}: ${tm[1]} ${tm[1]===1?'person reports':'people report'} directly to me, ${Math.round(tm[1]/51*100)}% of my direct team.`;}
+  };
+  lg.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('mouseenter',()=>{if(locked===null)show(b.dataset.t)});
+    b.addEventListener('mouseleave',()=>{if(locked===null)show(null)});
+    b.addEventListener('focus',()=>{if(locked===null)show(b.dataset.t)});
+    b.addEventListener('click',()=>{locked=locked===b.dataset.t?null:b.dataset.t;show(locked)});
+  });
+})();
+
+// tools
+document.getElementById('tools').innerHTML=TOOLS.map(([g,c,list])=>`<div class="tgroup"><h4>${g}</h4><div class="tlist">${list.map(([n,ab])=>`<span class="tool" style="--c:${c}"><i aria-hidden="true">${ab}</i>${n}</span>`).join('')}</div></div>`).join('');
+
+// skill filter
+let active=null;const tags=document.getElementById('tags'),fm=document.getElementById('filter-msg');
 Object.entries(SKILLS).forEach(([k,v])=>{const b=document.createElement('button');b.className='tag';b.id='t-'+k;b.textContent=v;b.setAttribute('aria-pressed','false');
   b.onclick=()=>{active=active===k?null:k;document.querySelectorAll('.tag').forEach(x=>x.setAttribute('aria-pressed',x.id==='t-'+active));
-  jobsEl.classList.toggle('filtering',!!active);
-  jobsEl.querySelectorAll('.duties li').forEach(li=>{const hit=active&&li.dataset.tags.split(' ').includes(active);li.classList.toggle('hit',!!hit);if(hit)li.hidden=false;});};
+  jobsEl.classList.toggle('filtering',!!active);let hits=0,roles=new Set();
+  jobsEl.querySelectorAll('.job').forEach(job=>job.querySelectorAll('.duties li').forEach(li=>{const hit=active&&li.dataset.tags.split(' ').includes(active);li.classList.toggle('hit',!!hit);if(hit){li.hidden=false;hits++;roles.add(job.id)}}));
+  fm.textContent=active?`${hits} matching duties across ${roles.size} roles`:'';
+  if(active&&roles.size){const first=document.getElementById([...roles][0]);if(innerWidth>860)first.scrollIntoView({block:'start'})}};
   tags.appendChild(b);});
-document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{const s=b.querySelector('small');try{navigator.clipboard.writeText(b.dataset.copy).then(()=>{s.textContent='Copied';setTimeout(()=>s.textContent='Copy',1600)},()=>{s.textContent='Select'})}catch(e){}}));
+
+// copy
+document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{const s=b.querySelector('small');const ok=()=>{s.textContent='Copied';setTimeout(()=>s.textContent='Copy',1600)};try{navigator.clipboard.writeText(b.dataset.copy).then(ok,()=>{const r=document.createRange();r.selectNodeContents(b.firstChild);getSelection().removeAllRanges();getSelection().addRange(r);s.textContent='Selected'})}catch(e){}}));
+
+// count-up
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('[data-count]').forEach(el=>{const end=+el.dataset.count,t0=performance.now();const st=t=>{const p=Math.min(1,(t-t0)/1200);el.textContent=Math.round(end*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(st)};requestAnimationFrame(st)})}
+
+// scroll progress
+const bar=document.getElementById('bar');const sp=()=>{const h=document.documentElement.scrollHeight-innerHeight;bar.style.transform=`scaleX(${h>0?scrollY/h:0})`};addEventListener('scroll',sp,{passive:true});sp();
+
+// theme toggle
+document.getElementById('theme').onclick=()=>{const r=document.documentElement;const cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark';try{localStorage.setItem('ll-theme',r.dataset.theme)}catch(e){}};
+try{const t=localStorage.getItem('ll-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}
 
 </script>
 
